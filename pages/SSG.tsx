@@ -2,19 +2,20 @@ import type { NextPage } from "next";
 import Head from "next/head";
 import Image from "next/image";
 import styles from "../styles/Home.module.css";
-import { useEffect, useState } from "react";
 import { Links } from "../components/Links";
 
-const Home: NextPage = () => {
-  const [joke, setJoke] = useState({ value: "" });
+export async function getStaticProps() {
+  const res = await fetch("https://api.chucknorris.io/jokes/random");
+  const joke = await res.json();
 
-  useEffect(() => {
-    (async () => {
-      const res = await fetch("https://api.chucknorris.io/jokes/random");
-      setJoke(await res.json());
-    })();
-  }, []);
+  return {
+    props: {
+      joke,
+    },
+  };
+}
 
+const Home: NextPage = (props: any) => {
   return (
     <div className={styles.container}>
       <Head>
@@ -24,9 +25,8 @@ const Home: NextPage = () => {
       </Head>
 
       <main className={styles.main}>
-        <h1 className={styles.title}>{joke?.value}</h1>
-
-        <img src="/spa.png" width="70%" alt="" />
+        <h1 className={styles.title}>{props.joke.value}</h1>
+        <img src="/ssg.png" width="70%" alt="" />
       </main>
 
       <footer className={styles.footer}>
